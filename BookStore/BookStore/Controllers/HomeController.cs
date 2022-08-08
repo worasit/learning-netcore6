@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BookStore.Controllers;
 

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Mango.Services.ProductAPI.DbContexts;
+using Mango.Services.ProductAPI.DbContexts.Models;
 using Mango.Services.ProductAPI.DbContexts.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,13 +29,43 @@ public class ProductRepository : IProductRepository
         return _mapper.Map<ProductDto>(product);
     }
 
-    public Task<ProductDto> CreateUpdateProduct(ProductDto productDto)
+    public async Task<ProductDto> CreateProduct(ProductDto productDto)
     {
-        throw new NotImplementedException();
+        var product = _mapper.Map<Product>(productDto);
+        var createdProduct = await _context.Products.AddAsync(product);
+        await _context.SaveChangesAsync();
+        return _mapper.Map<ProductDto>(createdProduct);
     }
 
-    public Task<bool> DeleteProduct(int productId)
+    public async Task<bool> UpdateProduct(ProductDto productDto)
     {
-        throw new NotImplementedException();
+        if (productDto.ProductId <= 0)
+        {
+            return false;
+        }
+
+        var product = _mapper.Map<Product>(productDto);
+        _context.Update(product);
+        return await _context.SaveChangesAsync() >= 1;
+    }
+
+    public async Task<bool> DeleteProduct(int productId)
+    {
+        try
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(product => product.ProductId.Equals(productId));
+            if (product == null)
+            {
+                return false;
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 }

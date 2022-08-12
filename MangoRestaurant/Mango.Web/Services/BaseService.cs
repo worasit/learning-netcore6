@@ -2,6 +2,7 @@ using System.Text;
 using Mango.Web.Models;
 using Mango.Web.Services.IServices;
 using Newtonsoft.Json;
+using static System.GC;
 
 namespace Mango.Web.Services;
 
@@ -10,7 +11,7 @@ public class BaseService : IBaseService
     public ResponseDto responseModel { get; set; }
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public BaseService(IHttpClientFactory httpClientFactory)
+    protected BaseService(IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
         responseModel = new ResponseDto();
@@ -30,15 +31,6 @@ public class BaseService : IBaseService
                 httpRequestMessage.Content =
                     new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8);
             }
-
-            httpRequestMessage.Method = request.ApiType switch
-            {
-                SD.ApiType.GET => HttpMethod.Get,
-                SD.ApiType.POST => HttpMethod.Post,
-                SD.ApiType.PUT => HttpMethod.Put,
-                SD.ApiType.DELETE => HttpMethod.Delete,
-                _ => HttpMethod.Get
-            };
 
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
             var apiResponse = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -61,6 +53,6 @@ public class BaseService : IBaseService
 
     public void Dispose()
     {
-        GC.SuppressFinalize(true);
+        SuppressFinalize(true);
     }
 }

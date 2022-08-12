@@ -19,7 +19,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest
         {
             ApiType = HttpMethod.Get,
-            Url = $"{_options.BaseUrl}/products",
+            Url = $"{_options.BaseUrl}/api/products",
             AccessToken = "",
         });
     }
@@ -29,7 +29,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest
         {
             ApiType = HttpMethod.Get,
-            Url = $"{_options.BaseUrl}/products/{id}",
+            Url = $"{_options.BaseUrl}/api/products/{id}",
             AccessToken = "",
         });
     }
@@ -39,7 +39,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest
         {
             ApiType = HttpMethod.Post,
-            Url = $"{_options.BaseUrl}/products",
+            Url = $"{_options.BaseUrl}/api/products",
             Data = productDto,
             AccessToken = "",
         });
@@ -50,7 +50,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest
         {
             ApiType = HttpMethod.Put,
-            Url = $"{_options.BaseUrl}/products",
+            Url = $"{_options.BaseUrl}/api/products",
             Data = productDto,
             AccessToken = "",
         });
@@ -61,7 +61,7 @@ public class ProductService : BaseService, IProductService
         return await SendAsync<T>(new ApiRequest
         {
             ApiType = HttpMethod.Delete,
-            Url = $"{_options.BaseUrl}/products/{id}",
+            Url = $"{_options.BaseUrl}/api/products/{id}",
             AccessToken = "",
         });
     }

@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Mango.Web.Models;
+using Mango.Web.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
+namespace Mango.Web.Controllers
+{
+    public class ProductController : Controller
+    {
+        private readonly IProductService _productService;
+
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
+
+        public async Task<IActionResult> ProductIndex()
+        {
+            var productDtos = new List<ProductDto>();
+            var responseDto = await _productService.GetAllProductsAsync<ResponseDto>();
+            if (responseDto.isSuccess && responseDto.Result != null)
+            {
+                productDtos = JsonConvert.DeserializeObject<List<ProductDto>>(Convert.ToString(responseDto.Result));
+            }
+
+            return View(productDtos);
+        }
+    }
+}

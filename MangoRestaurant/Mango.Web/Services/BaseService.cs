@@ -22,14 +22,13 @@ public class BaseService : IBaseService
         try
         {
             var httpClient = _httpClientFactory.CreateClient("MangoAPI");
-            var httpRequestMessage = new HttpRequestMessage();
+            var httpRequestMessage = new HttpRequestMessage(request.ApiType, request.Url);
             httpRequestMessage.Headers.Add("Accept", "application/json");
-            httpRequestMessage.RequestUri = new Uri(request.Url);
             httpClient.DefaultRequestHeaders.Clear();
             if (request.Data != null)
             {
                 httpRequestMessage.Content =
-                    new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8);
+                    new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
             }
 
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);

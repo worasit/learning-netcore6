@@ -32,9 +32,9 @@ public class ProductRepository : IProductRepository
     public async Task<ProductDto> CreateProduct(ProductDto productDto)
     {
         var product = _mapper.Map<Product>(productDto);
-        var createdProduct = await _context.Products.AddAsync(product);
+        await _context.Products.AddAsync(product);
         await _context.SaveChangesAsync();
-        return _mapper.Map<ProductDto>(createdProduct);
+        return _mapper.Map<ProductDto>(product);
     }
 
     public async Task<bool> UpdateProduct(ProductDto productDto)

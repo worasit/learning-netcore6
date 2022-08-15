@@ -9,7 +9,7 @@ namespace Mango.Services.ProductAPI.Repositories;
 public class ProductRepository : IProductRepository
 {
     private readonly ApplicationDbContext _context;
-    private IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public ProductRepository(ApplicationDbContext context, IMapper mapper)
     {
@@ -25,7 +25,9 @@ public class ProductRepository : IProductRepository
 
     public async Task<ProductDto> GetProductById(int productId)
     {
-        var product = await _context.Products.Where(product => product.ProductId.Equals(product)).FirstOrDefaultAsync();
+        var product = await _context.Products
+            .Where(product => product.ProductId == productId)
+            .FirstOrDefaultAsync();
         return _mapper.Map<ProductDto>(product);
     }
 
@@ -53,7 +55,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            var product = await _context.Products.FirstOrDefaultAsync(product => product.ProductId.Equals(productId));
+            var product = await _context.Products.FirstOrDefaultAsync(product => product.ProductId == productId);
             if (product == null)
             {
                 return false;

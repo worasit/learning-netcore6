@@ -63,7 +63,28 @@ namespace Mango.Web.Controllers
         public async Task<IActionResult> ProductEdit(ProductDto productDto)
         {
             var responseDto = await _productService.UpdateProductAsync<ResponseDto>(productDto);
-            if (responseDto != null && responseDto.isSuccess)
+            if (responseDto is {isSuccess: true})
+            {
+                return RedirectToAction(nameof(ProductIndex));
+            }
+
+            return View(productDto);
+        }
+
+        public async Task<IActionResult> ProductDelete(int productId)
+        {
+            var responseDto = await _productService.GetProductByIdAsync<ResponseDto>(productId);
+            if (!responseDto.isSuccess) return NotFound();
+            var productDto = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(responseDto.Result));
+            return View(productDto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductDelete(ProductDto productDto)
+        {
+            var responseDto = await _productService.DeleteProductAsync<ResponseDto>(productDto.ProductId);
+            if (responseDto is {isSuccess: true})
             {
                 return RedirectToAction(nameof(ProductIndex));
             }

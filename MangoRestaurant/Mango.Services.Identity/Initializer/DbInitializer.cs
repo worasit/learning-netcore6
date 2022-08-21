@@ -30,8 +30,6 @@ public class DbInitializer : IDbInitializer
         }
 
         _logger.LogInformation("Initialize all Users and Roles");
-        _roleManager.CreateAsync(new IdentityRole(SD.Roles.Admin)).GetAwaiter().GetResult();
-        _roleManager.CreateAsync(new IdentityRole(SD.Roles.Customer)).GetAwaiter().GetResult();
 
         var adminUser = new ApplicationUser
         {
@@ -53,23 +51,36 @@ public class DbInitializer : IDbInitializer
             Lastname = "sugimoto",
             Age = 28
         };
+
+        CreateRole(SD.Roles.Admin);
+        CreateRole(SD.Roles.Customer);
+
         BuildUser(adminUser, SD.Roles.Admin, "Admin@123");
         BuildUser(customerUser, SD.Roles.Customer, "Customer@123");
 
         _logger.LogInformation("Completed Roles & Users initialization");
     }
 
+    private void CreateRole(string role)
+    {
+        var identityRole = new IdentityRole(role);
+        _roleManager.CreateAsync(identityRole).GetAwaiter().GetResult();
+        _roleManager.AddClaimAsync(identityRole, new Claim(JwtClaimTypes.Role, role))
+            .GetAwaiter()
+            .GetResult();
+    }
+
     private void BuildUser(ApplicationUser applicationUser, string role, string password)
     {
         _userManager.CreateAsync(applicationUser, password).GetAwaiter().GetResult();
         _userManager.AddToRoleAsync(applicationUser, role).GetAwaiter().GetResult();
-        _ = _userManager.AddClaimsAsync(applicationUser, new[]
+        _userManager.AddClaimsAsync(applicationUser, new[]
         {
             new Claim(JwtClaimTypes.Name, applicationUser.FirstName + " " + applicationUser.Lastname),
             new Claim(JwtClaimTypes.GivenName, applicationUser.FirstName),
             new Claim(JwtClaimTypes.FamilyName, applicationUser.Lastname),
             new Claim(JwtClaimTypes.Email, applicationUser.Email),
             new Claim(JwtClaimTypes.Role, role)
-        }).Result;
+        }).GetAwaiter().GetResult();
     }
 }

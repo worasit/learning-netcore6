@@ -5,8 +5,19 @@ namespace Mango.Services.Identity;
 
 public static class SD
 {
-    public const string Admin = "Admin";
-    public const string Customer = "Customer";
+    public static class Roles
+    {
+        /// <summary>
+        /// Admin role
+        /// </summary>
+        public const string Admin = "Admin";
+
+        /// <summary>
+        /// Customer role
+        /// </summary>
+        public const string Customer = "Customer";
+    }
+
 
     public static IEnumerable<IdentityResource> IdentityResources =>
         new IdentityResource[]

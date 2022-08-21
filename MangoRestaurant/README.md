@@ -27,3 +27,12 @@ dotnet ef dbcontext info
 dotnet ef migrations add AddProductModelToDb
 dotnet ef database update
 ```
+
+### Configure Duende Identity Server
+
+https://docs.duendesoftware.com/identityserver/v6/quickstarts/0_overview/
+
+```shell
+dotnet new --install Duende.IdentityServer.Templates
+cd
+```
